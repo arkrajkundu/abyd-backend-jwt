@@ -1,27 +1,25 @@
+// userDataController.js
 import User from '../models/User.js';
 import { getQuestionData, updateBitString, checkCriteria, getQuestionIndex, skipQuestion } from '../questionsData.js';
 import { generateReport } from '../generateReport.js';
 import { generateRandomStrings } from '../utils.js';
 
-// Create a new user
 export const createUser = async (req, res) => {
-  const { email_id, company, industry, sub_industry } = req.body;
+  const { email, company, industry, subIndustry } = req.body;
 
   try {
-    // Check if the user already exists
-    const existingUser = await User.findOne({ email_id });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user with initial data
     const newUser = new User({
-      email_id,
+      email,
       company,
       industry,
-      sub_industry,
-      question_no: 1,
-      bit_string: '0',  // Initialize bit_string
+      subIndustry,
+      question_no: 1, // Initialize question_no
+      bit_string: '0', // Initialize bit_string
       guidelines: [],
       practices: [],
       certifications: [],
@@ -36,12 +34,11 @@ export const createUser = async (req, res) => {
   }
 };
 
-// Delete a user
 export const deleteUser = async (req, res) => {
-  const { email } = req.params;
+  const { email } = req.params; // Use 'email' instead of 'email_id'
 
   try {
-    const result = await User.deleteOne({ email_id: email });
+    const result = await User.deleteOne({ email });
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -52,12 +49,11 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// Get user data
 export const getUserData = async (req, res) => {
-  const { email } = req.params;
+  const { email } = req.params; // Use 'email' instead of 'email_id'
 
   try {
-    const userData = await User.findOne({ email_id: email });
+    const userData = await User.findOne({ email });
     if (!userData) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -68,15 +64,11 @@ export const getUserData = async (req, res) => {
   }
 };
 
-// Get questions for a user
 export const getQuestions = async (req, res) => {
-  const { email_id, question_no, keywords, bit_string } = req.body;
+  const { email, question_no, keywords, bit_string } = req.body; // Use 'email' instead of 'email_id'
 
   try {
-    let userData = await User.findOne({ email: email_id });
-    console.log(userData)
-    console.log("Email ID:", email_id);
-
+    let userData = await User.findOne({ email });
     if (!userData) {
       return res.status(404).json({ message: "User not found" });
     }
