@@ -1,11 +1,13 @@
-// routes/userDataRoutes.js
 import express from 'express';
-import { getUserData, createUserData } from '../controllers/userDataController.js';
+import { getUserData, createUser } from '../controllers/userDataController.js';
 import { authenticateToken } from '../middleware/authenticateToken.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, getUserData);
-router.post('/', authenticateToken, createUserData);
+// Route to get user data, requires authentication
+router.get('/:email', authenticateToken, getUserData);
+
+// Route to create a new user, requires authentication
+router.post('/', authenticateToken, createUser);
 
 export default router;
