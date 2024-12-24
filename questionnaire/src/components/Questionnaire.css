@@ -1,0 +1,50 @@
+.questionnaire-container {
+  padding: 20px;
+  width: 100%;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.question {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.save-button {
+  padding: 10px 20px;
+  background-color: #ff7f50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tip-icon {
+  cursor: pointer;
+  margin-left: 8px;
+  color: #007bff;
+}
+
+.tip-popup {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 1000;
+  transform: translateY(-50%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

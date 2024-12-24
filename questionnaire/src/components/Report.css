@@ -1,0 +1,28 @@
+.report-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.report-section {
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+}
