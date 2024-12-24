@@ -1,4 +1,3 @@
-// models/User.js
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
@@ -10,10 +9,31 @@ const UserSchema = new mongoose.Schema({
   subIndustry: { type: String },
   guidelines: { type: [String], default: [] },
   practices: { type: [String], default: [] },
-  certifications: { type: [String], default: [] },
-  documents: { type: [String], default: [] },
+  // certifications: { type: [String], default: [] },
+  // documents: { type: [String], default: [] },
   question_no: { type: Number, default: 1 },
   bit_string: { type: String, default: '0' },
+
+  questionKeywords: [{
+    questionNo: { type: Number, required: true },
+    keywords: { type: [String], required: true }
+  }],
+
+  userStats: {
+    type: Map,
+    of: [String], // Array of strings for each field in the stats
+    default: {
+      "complianceChecklist": [{ name: String, checked: Boolean }],
+      "penaltyKeywords": [],
+      "stepByStepGuide": [],
+      "faqs": [],
+      "onTheRightSide": [],
+      "doDont": [],
+      "certifications": [],
+      "legalDocuments": []
+    }
+  }
+
 }, { timestamps: true });
 
 export default mongoose.model('User', UserSchema);
