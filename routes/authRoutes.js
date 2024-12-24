@@ -1,27 +1,23 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js'; // Assuming you have a User model
+import User from '../models/User.js';
 
 const router = express.Router();
 
-// Signup Route
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username: email, email, password: hashedPassword });
 
     await newUser.save();
 
-    // Generate JWT token
     const token = jwt.sign({ id: newUser._id }, 'your_jwt_secret');
     res.status(201).json({ success: true, token });
   } catch (err) {
@@ -30,7 +26,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login Route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -44,7 +39,6 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid password' });
     }
 
-    // Generate JWT token
     const token = jwt.sign({ id: user._id }, 'your_jwt_secret');
     res.json({ success: true, token });
   } catch (err) {
