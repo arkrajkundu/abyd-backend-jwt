@@ -11,7 +11,9 @@ const UserSchema = new mongoose.Schema({
   guidelines: { type: [String], default: [] },
   practices: { type: [String], default: [] },
   certifications: { type: [String], default: [] },
-  documents: { type: [String], default: [] }
+  documents: { type: [String], default: [] },
+  question_no: { type: Number, default: 1 },
+  bit_string: { type: String, default: '0' },
 }, { timestamps: true });
 
 export default mongoose.model('User', UserSchema);
