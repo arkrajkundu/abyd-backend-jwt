@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { getQuestions, createUser, deleteUser, getUserData } from './controllers/userDataController.js';
 import { loadQuestionsData } from './questionsData.js';
 import authRoutes from './routes/authRoutes.js';
+import User from './models/User.js';
 
 const app = express();
 
@@ -24,17 +25,18 @@ loadQuestionsData()
     .then(() => console.log("Questions data loaded successfully."))
     .catch(err => console.error("Failed to load questions data:", err));
 
+// Routes for creating a user and fetching questions
 app.post('/create-user', createUser);
-
 app.post('/get-questions', getQuestions);
 
+// Auth routes
 app.use('/auth', authRoutes);
 
 app.get('/dashboard', async (req, res) => {
     if (req.isAuthenticated()) {
         try {
-            const userEmail = req.user.email;
-            const userData = await getUserData.findOne({ email_id: userEmail });
+            const userEmail = req.user.email; // req.user contains authenticated user data
+            const userData = await User.findOne({ email: userEmail }); // Use the User model to fetch data
 
             if (userData) {
                 res.json({ loggedIn: true, userData });
@@ -42,6 +44,7 @@ app.get('/dashboard', async (req, res) => {
                 res.json({ loggedIn: true, message: 'No user data found' });
             }
         } catch (error) {
+            console.error("Error fetching user data:", error);
             res.status(500).json({ error: 'Error fetching user data' });
         }
     } else {
