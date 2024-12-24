@@ -34,7 +34,7 @@ app.get('/dashboard', async (req, res) => {
     if (req.isAuthenticated()) {
         try {
             const userEmail = req.user.email;
-            const userData = await UserData.findOne({ email_id: userEmail });
+            const userData = await getUserData.findOne({ email_id: userEmail });
 
             if (userData) {
                 res.json({ loggedIn: true, userData });
