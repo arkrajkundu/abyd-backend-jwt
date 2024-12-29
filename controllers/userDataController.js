@@ -319,7 +319,6 @@ function setBitToShowQuestion(bit_string, questionNo, isShown) {
   return bit_string;
 }
 
-
 // Get User Checklist API (GET /:email/checklist)
 export const getUserChecklist = async (req, res) => {
   const { email } = req.params;
@@ -362,6 +361,84 @@ export const setChecklist = async (req, res) => {
     res.status(200).json({ message: "Checklist updated successfully", checklist: userData.userStats.complianceChecklist });
   } catch (error) {
     console.error("Error in setChecklist:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get User Stats API (GET /:email/userStats)
+export const getUserStats = async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const userData = await User.findOne({ email });
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return the user's stats from userStats
+    const { userStats } = userData;
+    res.status(200).json({ userStats });
+  } catch (error) {
+    console.error("Error in getUserStats:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Set (Update) User Stats API (PUT /:email/userStats)
+export const setUserStats = async (req, res) => {
+  const { email } = req.params;
+  const { complianceChecklist, penaltyKeywords, stepByStepGuide, faqs, onTheRightSide, doDont, certifications, legalDocuments } = req.body;
+
+  try {
+    const userData = await User.findOne({ email });
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the user's stats in userStats
+    userData.userStats.complianceChecklist = complianceChecklist || userData.userStats.complianceChecklist;
+    userData.userStats.penaltyKeywords = penaltyKeywords || userData.userStats.penaltyKeywords;
+    userData.userStats.stepByStepGuide = stepByStepGuide || userData.userStats.stepByStepGuide;
+    userData.userStats.faqs = faqs || userData.userStats.faqs;
+    userData.userStats.onTheRightSide = onTheRightSide || userData.userStats.onTheRightSide;
+    userData.userStats.doDont = doDont || userData.userStats.doDont;
+    userData.userStats.certifications = certifications || userData.userStats.certifications;
+    userData.userStats.legalDocuments = legalDocuments || userData.userStats.legalDocuments;
+
+    await userData.save();
+    res.status(200).json({ message: "User stats updated successfully", userStats: userData.userStats });
+  } catch (error) {
+    console.error("Error in setUserStats:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Delete User Stats API (DELETE /:email/userStats)
+export const deleteUserStats = async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const userData = await User.findOne({ email });
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Reset all user stats fields to their default values
+    userData.userStats = {
+      complianceChecklist: [],
+      penaltyKeywords: [],
+      stepByStepGuide: [],
+      faqs: [],
+      onTheRightSide: [],
+      doDont: [],
+      certifications: [],
+      legalDocuments: []
+    };
+
+    await userData.save();
+    res.status(200).json({ message: "User stats deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteUserStats:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
