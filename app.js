@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { getQuestions, createUser, deleteUser, getUserData } from './controllers/userDataController.js';
 import { loadQuestionsData } from './questionsData.js';
 import authRoutes from './routes/authRoutes.js';
+import userDataRoutes from './routes/userDataRoutes.js'
 import User from './models/User.js';
 
 const app = express();
@@ -31,6 +32,7 @@ app.post('/get-questions', getQuestions);
 
 // Auth routes
 app.use('/auth', authRoutes);
+app.use('/user', userDataRoutes);
 
 app.get('/dashboard', async (req, res) => {
     if (req.isAuthenticated()) {
