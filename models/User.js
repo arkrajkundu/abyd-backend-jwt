@@ -9,8 +9,6 @@ const UserSchema = new mongoose.Schema({
   subIndustry: { type: String },
   guidelines: { type: [String], default: [] },
   practices: { type: [String], default: [] },
-  // certifications: { type: [String], default: [] },
-  // documents: { type: [String], default: [] },
   question_no: { type: Number, default: 1 },
   bit_string: { type: String, default: '0' },
 
