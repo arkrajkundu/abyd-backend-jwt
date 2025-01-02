@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+const User = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -13,13 +13,13 @@ const UserSchema = new mongoose.Schema({
   bit_string: { type: String, default: '0' },
 
   questionKeywords: [{
-    questionNo: { type: Number, required: true },
-    keywords: { type: [String], required: true }
+    questionNo: { type: Number, default: 0 },
+    keywords: { type: [String], default: [] }
   }],
 
   userStats: {
     type: Map,
-    of: [String], // Array of strings for each field in the stats
+    of: mongoose.Schema.Types.Mixed,
     default: {
       "complianceChecklist": [{ name: String, checked: Boolean }],
       "penaltyKeywords": [],
@@ -34,4 +34,4 @@ const UserSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-export default mongoose.model('User', UserSchema);
+export default mongoose.model('User', User);
