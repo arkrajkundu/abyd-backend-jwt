@@ -5,7 +5,7 @@ import { getQuestions, createUser, deleteUser, getUserData } from './controllers
 import { loadQuestionsData } from './questionsData.js';
 import authRoutes from './routes/authRoutes.js';
 import userDataRoutes from './routes/userDataRoutes.js'
-import stateRoutes from './routes/stateRoutes.js';
+import stateRoutes from './routes/stateRoute.js';
 import User from './models/User.js';
 
 const app = express();
