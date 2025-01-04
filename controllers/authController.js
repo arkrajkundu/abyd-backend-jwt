@@ -46,13 +46,37 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const getUserProfile = async (req, res) => {
+export const getUserData = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(403).json({ message: "Token is required" });
+  }
+
   try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
+    const decoded = jwt.verify(token, 'YOUR_SECRET_KEY');
+
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      username: user.username,
+      email: user.email,
+      company: user.company,
+      industry: user.industry,
+      subIndustry: user.subIndustry,
+      guidelines: user.guidelines,
+      practices: user.practices,
+      question_no: user.question_no,
+      bit_string: user.bit_string,
+      questionKeywords: user.questionKeywords,
+      userStats: user.userStats
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
