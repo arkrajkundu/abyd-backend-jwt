@@ -54,5 +54,14 @@ app.get('/dashboard', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// const PORT = process.env.PORT || 8000;
+// app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+
+
+const IP = process.env.IP || '172.203.224.99';
+const PORT = process.env.PORT || 8888;  // Backend port
+
+// Start the backend server
+app.listen(PORT, IP, () => {
+    console.log(`Backend is running on http://${IP}:${PORT}`);
+});
