@@ -48,4 +48,4 @@ Before you begin, ensure that you have the following installed:
    node app.js
    ```
 
-   This will start the backend server, and the application will be accessible at `http://localhost:5000` (or any other port specified in your configuration).
+   This will start the backend server on PORT 8000, and the application will be accessible at `http://localhost:5000` (or any other port specified in your configuration).
