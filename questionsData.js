@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 const questionsMap = new Map();
 
 export async function loadQuestionsData() {
-    const filePath = path.join(__dirname, 'dataset.xlsx');
+    const filePath = path.join(__dirname, 'dpdpa.xlsx');
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
     const worksheet = workbook.getWorksheet(1);
@@ -18,31 +18,33 @@ export async function loadQuestionsData() {
             const criteria = row.getCell(3).value;
             // console.log(criteria)
             const question = row.getCell(4).value;
-            const tip = row.getCell(5).value || ''
-            const keywordsString = row.getCell(7).value || ''; // Handle undefined or empty cells gracefully
-
-            // New columns for guidelines, practices, certifications, documents
-            const guidelines = row.getCell(8).value || '';
-            const practices = row.getCell(9).value || '';
-            const certifications = row.getCell(10).value || '';
-            const documents = row.getCell(11).value || '';
+            const tag = row.getCell(5).value || ''
+            const keywordsString = row.getCell(6).value || ''; // Handle undefined or empty cells gracefully
+            const otrs = row.getCell(7).value || '';
+            // New columns for compliance, practices, certifications, documents
+            const compliance = row.getCell(8).value || '';
+            const penaltyKeywords = row.getCell(9).value || '';
+            const stepByStepGuide = row.getCell(10).value || '';
+            const faq = row.getCell(11).value || '';
+            const doDont = row.getCell(12).value || '';
+            const certifications = row.getCell(13).value || '';
+            const legalDocuments = row.getCell(14).value || '';
 
             questionsMap.set(questionNo, {
                 question,
                 criteria: parseCriteria(criteria),
                 criteriaOr: parseCriteriaOr(criteria),
                 keywords: parseKeywords(keywordsString),
-                tip,
-                guidelines,
-                practices,
+                otrs,
+                tag,
+                compliance,
+                penaltyKeywords,
+                stepByStepGuide,
+                faq,
+                doDont,
                 certifications,
-                documents
+                legalDocuments
             });
-
-            // console.log(keywords , keywords.length)
-            // questionsMap.set(questionNo, { question, criteria: parseCriteria(criteria), criteriaOr: parseCriteriaOr(criteria), keywords: parseKeywords(keywordsString), tip });
-            // console.log(parseKeywords(keywordsString))
-
         }
     });
 }
@@ -124,7 +126,17 @@ function processToken(token) {
 
 
 export function getQuestionData(questionNo) {
-    return questionsMap.get(questionNo);
+    // Parse the questionNo as an integer
+    const parsedQuestionNo = parseInt(questionNo);
+
+    // Check if the parsed value is a valid number (not NaN) and greater than 0
+    if (isNaN(parsedQuestionNo) || parsedQuestionNo <= 0) {
+        // If invalid (NaN or non-positive), return 0 or a default value
+        return 0;
+    }
+
+    // Fetch the data from questionsMap using the parsed question number
+    return questionsMap.get(parsedQuestionNo) || 0; // Return 0 if not found in the map
 }
 
 // Add this function to your questionsData.js file
@@ -152,7 +164,6 @@ export function updateBitString(bit_string, questionNo, keywords) {
     let newBitString = bit_string.split("");
     //let newBitString = bit_string.slice(0, index) + '1'; // Show the question
     let keywordsFull = getQuestionData(questionNo).keywords;
-    //console.log(keywordsFull)
     let endIndex = startIndex + keywordsFull.length;
     for (let i = startIndex; i < endIndex; i++) {
         newBitString.push('0');

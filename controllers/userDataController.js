@@ -1,7 +1,5 @@
 import User from '../models/User.js';
 import { getQuestionData, updateBitString, checkCriteria, getQuestionIndex, skipQuestion } from '../questionsData.js';
-import { generateReport } from '../generateReport.js';
-import { generateRandomStrings } from '../utils.js';
 
 // Create User API
 export const createUser = async (req, res) => {
@@ -106,9 +104,11 @@ export const getQuestions = async (req, res) => {
 
     // Update bit string based on responses to the current question
     let updatedBitString = updateBitString(bit_string, question_no, keywords);
+    userData.bit_string = updatedBitString;
 
     // Update questionKeywords with the selected keywords for the current question
     const currentQuestionData = getQuestionData(question_no);
+
     if (currentQuestionData) {
       const existingKeywords = userData.questionKeywords.find(q => q.questionNo === question_no);
       if (existingKeywords) {
@@ -117,6 +117,16 @@ export const getQuestions = async (req, res) => {
         userData.questionKeywords.push({ questionNo: question_no, keywords });
       }
     }
+
+    userData.userStats.complianceChecklist = currentQuestionData.compliance || [];
+    userData.userStats.penaltyKeywords = currentQuestionData.penaltyKeywords || [];
+    userData.userStats.stepByStepGuide = currentQuestionData.stepByStepGuide || [];
+    userData.userStats.faqs = currentQuestionData.faq || [];
+    userData.userStats.onTheRightSide = currentQuestionData.otrs || [];
+    userData.userStats.doDont = currentQuestionData.doDont || [];
+    userData.userStats.certifications = currentQuestionData.certifications || [];
+    userData.userStats.legalDocuments = currentQuestionData.legalDocuments || [];
+    console.log("user data updated: ", userData)
 
     await userData.save();
 
@@ -143,8 +153,6 @@ export const getQuestions = async (req, res) => {
       }
     }
 
-    // If no further questions, generate a report
-    const [percentage, report] = await generateReport(req);
     userData.bit_string = updatedBitString;
     await userData.save();
 
@@ -152,13 +160,24 @@ export const getQuestions = async (req, res) => {
       message: "No further questions to show",
       output: {
         question_no: -1,
-        bit_string: updatedBitString,
-        guidelines: "",
-        practices: generateRandomStrings(1),
-        certifications: generateRandomStrings(1),
-        documents: generateRandomStrings(1),
-        penalty_percentage: percentage,
-        report_url: report
+        question_desc: "No further questions to show",
+        keywords: [],
+        tip: "No further questions to show",
+        bit_string: "No further questions to show",
+        userStats: {
+          complianceChecklist: userData.userStats.complianceChecklist || [],
+          penaltyKeywords: userData.userStats.penaltyKeywords || [],
+          stepByStepGuide: userData.userStats.stepByStepGuide || [],
+          faqs: userData.userStats.faqs || [],
+          onTheRightSide: userData.userStats.onTheRightSide || [],
+          doDont: userData.userStats.doDont || [],
+          certifications: userData.userStats.certifications || [],
+          legalDocuments: userData.userStats.legalDocuments || [],
+          guidelines: userData.userStats.guidelines || [],
+          practices: userData.userStats.practices || [],
+        },
+        penalty_percentage: 0,
+        report_url: ""
       }
     });
   } catch (error) {
@@ -233,8 +252,7 @@ export const getUserStats = async (req, res) => {
 };
 
 export const setUserStats = async (req, res) => {
-  const { email } = req.params;
-  const { complianceChecklist, penaltyKeywords, stepByStepGuide, faqs, onTheRightSide, doDont, certifications, legalDocuments } = req.body;
+  const { email, complianceChecklist, penaltyKeywords, stepByStepGuide, faqs, onTheRightSide, doDont, certifications, legalDocuments } = req.body;
 
   try {
     const userData = await User.findOne({ email });
