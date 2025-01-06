@@ -5,6 +5,7 @@ import { getQuestions, createUser, deleteUser, getUserData } from './controllers
 import { loadQuestionsData } from './questionsData.js';
 import authRoutes from './routes/authRoutes.js';
 import userDataRoutes from './routes/userDataRoutes.js'
+import stateRoutes from './routes/stateRoute.js';
 import User from './models/User.js';
 
 const app = express();
@@ -14,7 +15,7 @@ app.use(cors({
     origin: '*',
     credentials: true
 }));
-
+app.use(express.urlencoded({ extended: true }));
 mongoose.connect('mongodb+srv://arkrajkundu:TaHRMZgtAICvMtaa@cluster0.qpzx6kx.mongodb.net/abyd-web-app', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -33,6 +34,9 @@ app.post('/get-questions', getQuestions);
 // Auth routes
 app.use('/auth', authRoutes);
 app.use('/user', userDataRoutes);
+
+// DOC_BUILDER routes
+app.use('/api/state', stateRoutes);
 
 app.get('/dashboard', async (req, res) => {
     if (req.isAuthenticated()) {
